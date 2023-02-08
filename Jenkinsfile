@@ -22,9 +22,9 @@ pipeline {
           stage('create-and-pod') {
             steps {
                 script {
-                    sh "ssh ubuntu@34.194.155.236 kubectl create ns jenkins-vm"
-                    sh "ssh ubuntu@34.194.155.236 kubectl create -f aws-secret.yaml -n jenkins-vm"
-                    sh "ssh ubuntu@34.194.155.236 kubectl create -f aws-pod.yaml -n jenkins-vm"
+                    sh "kubectl create ns jenkins-vm"
+                    sh "kubectl create -f aws-secret.yaml -n jenkins-vm"
+                    sh "kubectl create -f aws-pod.yaml -n jenkins-vm"
                 }
             }
         }
