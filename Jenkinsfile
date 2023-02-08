@@ -19,5 +19,14 @@ pipeline {
                 }
             }
         }
+          stage('create-and-pod') {
+            steps {
+                script {
+                    sh "kubectl create ns jenkins-vm"
+                    sh "kubectl create -f aws-secret.yaml -n jenkins-vm"
+                    sh "kubectl create -f aws-pod.yaml -n jenkins-vm"
+                }
+            }
+        }
     } 
 }
