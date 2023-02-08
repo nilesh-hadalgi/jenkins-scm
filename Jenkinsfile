@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage('Copy files') {
+            steps {
+                sh 'cp -r /home/ubuntu/Nilesh/jenkins-files/* $WORKSpace/'
+            }
+        }
         stage('docker-Build') {
             steps {
                 script {
