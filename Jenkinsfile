@@ -3,9 +3,10 @@ pipeline {
     stages {
         stage('Copy files') {
             steps {
-                script{
-                    sh 'cp /home/ubuntu/Nilesh/jenkins-files/* $WORKSPACE/'
-                }
+                script{ sh '''
+                cp /home/ubuntu/Nilesh/jenkins-files/* ${WORKSPACE}/
+                '''}
+                
             }
         }
         stage('docker-Build') {
