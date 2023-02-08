@@ -4,7 +4,7 @@ pipeline {
         stage('docker-Build') {
             steps {
                  script {
-                    dir("/home/ubuntu/Nilesh/jenkins-files"){
+                    dir("home/ubuntu/Nilesh/jenkins-files/"){
                         sh "pwd"
                         sh "docker build -t awsvmscheduler:v1.0 ."
 
