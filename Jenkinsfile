@@ -3,12 +3,11 @@ pipeline {
     stages {
         stage('docker-Build') {
             steps {
-                script {
-                    // Use the Docker plugin to build the image
-
-                    sh "cd /home/ubuntu/Nilesh/jenkins-files"
+                 script {
+                    dir("/home/ubuntu/Nilesh/jenkins-files"){}
                     sh "docker build -t awsvmscheduler:v1.0 ."
                     sh "docker tag azurescheduler:v1.0 quay.io/nilesh_hadalgi/awsvmscheduler:v1.0"
+                 }
                 }
             }
         }
@@ -24,3 +23,8 @@ pipeline {
         }
     } 
 }
+
+ script {
+                    dir("/home/ubuntu/Nilesh/jenkins-files") {
+                        sh 'docker build -t quay.io/<username>/<repository>:<tag> .'
+                    }
