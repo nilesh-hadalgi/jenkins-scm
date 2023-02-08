@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage('Login to Quay') {
          steps {
+            script {
             def myCredential = credentials('8617fb4f-26f3-4e2a-996c-ca77885b19a3')
             sh "docker login quay.io -u ${myCredential.username} -p ${myCredential.password}"
 
