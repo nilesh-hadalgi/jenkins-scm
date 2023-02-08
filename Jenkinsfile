@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Copy files') {
             steps {
-                sh 'sudo cp -r /home/ubuntu/Nilesh/jenkins-files/* $WORKSpace/'
-                sh "sudo chown -R jenkins:jenkins $WORKSpace/"
+                sh "cp -r /home/ubuntu/Nilesh/jenkins-files/* $WORKSpace/"
+                sh "chown -R jenkins:jenkins $WORKSpace/"
             }
         }
         stage('docker-Build') {
