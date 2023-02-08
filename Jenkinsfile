@@ -4,7 +4,7 @@ pipeline {
         stage('docker-Build') {
             steps {
                  script {
-                    dir("/home/ubuntu/Nilesh/jenkins-files"){}
+                    dir("/home/ubuntu/Nilesh/jenkins-files"){
                     sh "docker build -t awsvmscheduler:v1.0 ."
                     sh "docker tag azurescheduler:v1.0 quay.io/nilesh_hadalgi/awsvmscheduler:v1.0"
                  }
@@ -23,8 +23,3 @@ pipeline {
         }
     } 
 }
-
- script {
-                    dir("/home/ubuntu/Nilesh/jenkins-files") {
-                        sh 'docker build -t quay.io/<username>/<repository>:<tag> .'
-                    }
