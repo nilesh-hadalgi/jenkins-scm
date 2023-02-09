@@ -7,6 +7,7 @@ pipeline {
                  script {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-pem', usernameVariable: 'EC2_USER', keyFileVariable: 'EC2_PEM')]) {
                     sh '''
+                    echo $EC2_USER
                     #!/bin/bash
                     
                     # Set the hostname or public IP of the EC2 instance
