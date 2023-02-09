@@ -1,34 +1,37 @@
 pipeline {
     agent any
+
     stages {
-        stage('docker-Build') {
+        stage('Login to EC2 Instance') {
             steps {
                  script {
-                    sh "cp /home/ubuntu/Nilesh/jenkins-files/Dockerfile $WORKSPACE"
-                    sh "cp /home/ubuntu/Nilesh/jenkins-files/AWSVMScheduler $WORKSPACE"
+                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-pem', usernameVariable: 'EC2_USER', keyFileVariable: 'EC2_PEM')]) {
+                    sh '''
+                    #!/bin/bash
                     
-                    sh "docker build -t awsvmscheduler:v1.0 ."
-                    sh "docker tag azurescheduler:v1.0 quay.io/nilesh_hadalgi/awsvmscheduler:v1.0"
+                    # Set the hostname or public IP of the EC2 instance
+                    HOSTNAME="34.206.28.255"
+                    
+                    # Connect to the EC2 instance using the PEM file and hostname/IP
+                    ssh -i "$EC2_PEM" "$EC2_USER@$HOSTNAME"
+                    '''
+                }
                 }
             }
         }
-        stage('docker-push') {
+
+        stage('Run kubectl Commands') {
             steps {
-                script {
-                     withCredentials([usernamePassword(credentialsId: '8617fb4f-26f3-4e2a-996c-ca77885b19a3', usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD')]) {
-                    sh 'docker login quay.io -u $QUAY_USERNAME -p $QUAY_PASSWORD'
-                }// Use the Docker plugin to build the image
-                    sh "docker push quay.io/nilesh_hadalgi/awsvmscheduler:v1.0"
-                }
+                 script {
+                sh '''
+                #!/bin/bash
+                
+                # Run kubectl commands
+                kubectl get pods
+                '''
+            
+            }
             }
         }
-          stage('create-and-pod') {
-            steps {
-                script {
-                    sh "kubectl create -f aws-secret.yaml -n jenkins-vm"
-                    sh "kubectl create -f aws-pod.yaml -n jenkins-vm"
-                }
-            }
-        }
-    } 
+    }
 }
