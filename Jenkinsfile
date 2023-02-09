@@ -4,6 +4,9 @@ pipeline {
         stage('docker-Build') {
             steps {
                  script {
+                    sh "cp /home/ubuntu/Nilesh/jenkins-files/Dockerfile $WORKSPACE"
+                    sh "cp /home/ubuntu/Nilesh/jenkins-files/AWSVMScheduler $WORKSPACE"
+                    
                     sh "docker build -t awsvmscheduler:v1.0 ."
                     sh "docker tag azurescheduler:v1.0 quay.io/nilesh_hadalgi/awsvmscheduler:v1.0"
                 }
