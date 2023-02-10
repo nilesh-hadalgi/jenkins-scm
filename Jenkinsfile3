@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Whoami') {
             steps {
-                sh "su - newuser -c 'whoami'"
+                sh "su - ubuntu -c 'whoami'"
             }
         }
     }
