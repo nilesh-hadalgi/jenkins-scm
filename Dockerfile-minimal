@@ -1,0 +1,28 @@
+# Use Red Hat UBI Micro Image as the base image
+
+FROM registry.access.redhat.com/ubi8/ubi-minimal
+
+# Install Golang
+#RUN microdnf install -y golang
+
+LABEL name="azurevmscheduler" \
+    maintainer="nileshhadalgi3@gmail.com" \
+    vendor="Nilesh" \
+    version="1.0.0" \
+    release="1" \
+    summary="This service enables Azure cloud vm start/stop." \
+    description="This service enables Azure cloud vm start/stop."
+
+ENV command ""
+ENV AZURE_VM_NAME ""
+ENV AZURE_RG_NAME ""
+
+#COPY . .
+#RUN go mod download
+#RUN go build -o main
+
+# copy binary
+COPY ./Nilesh/jenkins-files/main /main
+#COPY main main
+
+CMD ["sh", "-c", "./main -c $command -vm $AZURE_VM_NAME -rg $AZURE_RG_NAME  "]
