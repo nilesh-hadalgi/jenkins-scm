@@ -1,9 +1,11 @@
 pipeline {
     agent any
     stages {
-        stage('Whoami') {
+        stage('build') {
             steps {
-                sh "su - ubuntu -c 'whoami'"
+                sh "docker build -t azurevmscheduler:v1.0 ."
+                sh "docker tag azurevmscheduler:v1.0 quay.io/nilesh_hadalgi/azurevmscheduler:v1.0"
+                sh "docker push"
             }
         }
     }
