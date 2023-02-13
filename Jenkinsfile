@@ -100,23 +100,9 @@ pipeline {
             }
         }
 
-        stage("delete cache "){
-            steps {
-                script {
-                    withCredentials([[
-                        $class: 'FileBinding',
-                        credentialsId: 'ec2-pem-file',
-                        variable: 'PEM_FILE'
-                    ]]) {
-                        sshagent(['jenkins-ec2-ssh-key']) {
-                            sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl delete secret az-secret -n jenkins-vm" 
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 kubectl delete pod az-pod -n jenkins-vm"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl delete namespace jenkins-vm"
-                        }
-                    }
-                }
-            }
-        }
+
+
+
+
     }
 }
