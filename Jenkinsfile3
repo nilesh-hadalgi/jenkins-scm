@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh "docker build -t azurevmscheduler:v1.0 ."
+                sh "docker build -f Dockerfile-azure -t azurevmscheduler:v1.0 ."
                 sh "docker tag azurevmscheduler:v1.0 quay.io/nilesh_hadalgi/azurevmscheduler:v1.0"
                 sh "docker push"
             }
