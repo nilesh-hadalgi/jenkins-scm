@@ -29,7 +29,7 @@ pipeline {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
                             sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker build -f ./Nilesh/jenkins-files/Dockerfile-minimal -t azurevmscheduler:v1.0 ."
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker tag docker.io/library/awsvmscheduler:v1.0 quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker tag docker.io/library/azurevmscheduler:v1.0 quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
                         }
                     }
                 }
