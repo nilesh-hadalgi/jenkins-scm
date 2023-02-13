@@ -28,8 +28,8 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker build -f ./Nilesh/jenkins-files/Dockerfile-minimal -t azurevmscheduler:v1.0 ."
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker tag docker.io/library/awsvmscheduler:v1.0 quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker build -f ./Nilesh/jenkins-files/Dockerfile -t awsvmscheduler:v1.0 ."
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker tag docker.io/library/awsvmscheduler:v1.0 quay.io/manoj_dhanorkar/awsvmscheduler:v1.0"
                         }
                     }
                 }
@@ -45,7 +45,7 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker push quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker push quay.io/manoj_dhanorkar/awsvmscheduler:v1.0"
                         }
                     }
                 }
@@ -77,7 +77,7 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/az-secret.yaml -n jenkins-vm"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/aws-secret.yaml -n jenkins-vm"
                         }
                     }
                 }
@@ -93,7 +93,7 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/az-pod.yaml -n jenkins-vm"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/aws-pod.yaml -n jenkins-vm"
                         }
                     }
                 }
@@ -110,8 +110,8 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl delete secret az-secret -n jenkins-vm" 
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 kubectl delete pod az-pod -n jenkins-vm"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl delete secret aws-secret -n jenkins-vm" 
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 kubectl delete pod aws-pod -n jenkins-vm"
                             sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl delete namespace jenkins-vm"
                         }
                     }
