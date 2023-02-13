@@ -22,7 +22,7 @@ ENV AZURE_RG_NAME ""
 #RUN go build -o main
 
 # copy binary
-COPY ./Nilesh/jenkins-files/main /main
+COPY main main
 #COPY main main
 
 CMD ["sh", "-c", "./main -c $command -vm $AZURE_VM_NAME -rg $AZURE_RG_NAME  "]
