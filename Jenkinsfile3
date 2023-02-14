@@ -7,7 +7,6 @@ pipeline {
                 sh "docker tag azurevmscheduler:v1.0 quay.io/nilesh_hadalgi/azurevmscheduler:v1.0"
             }
         }
-
         stage('docker-push') {
             steps {
                 script {
@@ -18,7 +17,23 @@ pipeline {
                 }
             }
         }
-
+        stage('Approval') {
+            steps {
+                script {
+                    def userInput = input(
+                        message: 'Do you want to proceed with the deployment?',
+                        parameters: [
+                            [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with deployment?', name: 'deploy']
+                        ]
+                    )
+                    if (userInput.deploy == true) {
+                        echo "Deployment approved!"
+                    } else {
+                        error "Deployment rejected!"
+                    }
+                }
+            }
+        }
         stage('copy') {
             steps {
                 script {
