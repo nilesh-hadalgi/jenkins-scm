@@ -11,7 +11,7 @@ spec:
     env:
     - name: command
       value: start
-    - name: AZURE_VM_NAMEsd
+    - name: AZURE_VM_NAME
       value: azure-vm
     - name: AZURE_RG_NAME
       value: azure-assignment

@@ -1,57 +1,50 @@
 pipeline {
     agent any
-
     stages {
-        stage("SSH connection "){
+        stage('build') {
+            steps {
+                sh "docker build -f Dockerfile-azure -t azurevmscheduler:v1.0 ."
+                sh "docker tag azurevmscheduler:v1.0 quay.io/nilesh_hadalgi/azurevmscheduler:v1.0"
+            }
+        }
+
+        stage('docker-push') {
             steps {
                 script {
-                    withCredentials([[
-                        $class: 'FileBinding',
-                        credentialsId: 'ec2-pem-file',
-                        variable: 'PEM_FILE'
-                    ]]) {
-                        sshagent(['jenkins-ec2-ssh-key']){
-                            sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 echo 'Connection Successful'"
-                        }
-                    }
+                     withCredentials([usernamePassword(credentialsId: 'quay-config', usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD')]) {
+                    sh 'docker login quay.io -u $QUAY_USERNAME -p $QUAY_PASSWORD'
+                }// Use the Docker plugin to build the image
+                   sh "docker push quay.io/nilesh_hadalgi/azurevmscheduler:v1.0"
                 }
             }
         }
-        stage("Docker Build and Tag"){
+
+        stage('copy') {
             steps {
                 script {
-                    withCredentials([[
-                        $class: 'FileBinding',
-                        credentialsId: 'ec2-pem-file',
-                        variable: 'PEM_FILE'
-                    ]]) {
-                        sshagent(['jenkins-ec2-ssh-key']) {
-                            sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker build -f ./Nilesh/jenkins-files/Dockerfile-minimal -t azurevmscheduler:v1.0 ."
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker tag azurevmscheduler:v1.0 quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
-                        }
-                    }
-                }
-            }
-        }
-         stage("Docker Push"){
-            steps {
-                script {
-                    withCredentials([[
+                     withCredentials([[
                         $class: 'FileBinding',
                         credentialsId: 'ec2-pem-file',
                         variable: 'PEM_FILE'
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
-                            sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 docker push quay.io/manoj_dhanorkar/azurevmscheduler:v1.0"
+                            
+        
+                            withCredentials([file(credentialsId: 'az-secret', variable: 'YAML_FILE')]) {
+
+                                sh "chmod 400 ${PEM_FILE}"
+                                sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 rm -r ./Nilesh/files/*"
+                                sh "scp -i ${PEM_FILE} $WORKSPACE/* ubuntu@54.174.129.48:./Nilesh/files/"
+                                sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files/"
+                            }
+                           
                         }
                     }
                 }
             }
         }
-         stage("Create Name Space"){
+
+        stage("Create Name Space"){
             steps {
                 script {
                     withCredentials([[
@@ -77,7 +70,7 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/az-secret.yaml -n jenkins-vm"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-secret.yaml -n jenkins-vm"
                         }
                     }
                 }
@@ -93,7 +86,7 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/jenkins-files/az-pod.yaml -n jenkins-vm"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-pod.yaml -n jenkins-vm"
                         }
                     }
                 }
@@ -101,8 +94,12 @@ pipeline {
         }
 
 
-
-
-
     }
+
 }
+
+
+
+
+
+

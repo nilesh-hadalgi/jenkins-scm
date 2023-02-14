@@ -35,7 +35,7 @@ pipeline {
                                 sh "chmod 400 ${PEM_FILE}"
                                 sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 rm -r ./Nilesh/files/*"
                                 sh "scp -i ${PEM_FILE} $WORKSPACE/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
-                                sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files"
+                                sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files/"
                             }
                            
                         }
