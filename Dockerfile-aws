@@ -17,7 +17,7 @@ ENV ec2_command "start"
 
 # copy bin file
 
-COPY ./Nilesh/jenkins-files/AWSVMScheduler /AWSVMScheduler
-#COPY AWSVMScheduler AWSVMScheduler
+#COPY ./Nilesh/jenkins-files/AWSVMScheduler /AWSVMScheduler
+COPY AWSVMScheduler AWSVMScheduler
 
 CMD ["sh", "-c", "./AWSVMScheduler -c  $ec2_command -i $ec2_instanceIds "]

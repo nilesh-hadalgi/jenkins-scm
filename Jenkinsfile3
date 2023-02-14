@@ -18,6 +18,28 @@ pipeline {
                 }
             }
         }
+
+        stage('copy') {
+            steps {
+                script {
+                     withCredentials([[
+                        $class: 'FileBinding',
+                        credentialsId: 'ec2-pem-file',
+                        variable: 'PEM_FILE'
+                    ]]) {
+                        sshagent(['jenkins-ec2-ssh-key']) {
+                            sh "chmod 400 ${PEM_FILE}"
+                            sh "scp -i ${PEM_FILE} $WORKSPACE/* ubuntu@54.174.129.48:./Nilesh/files/"
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
 }
+
+
+
+
