@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: aws-pod
+  namespace: jenkins-vm
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: aws-container
+    image: quay.io/nilesh_hadalgi/awsvmscheduler:v1.0
+    env:
+    - name: ec2_command
+      value: start
+    - name: ec2_instanceIds
+      value: i-0a65e169083fddef8
+    - name: AWS_DEFAULT_REGION
+      value: 'us-east-1'
+    envFrom:
+    - secretRef:
+        name: aws-secret

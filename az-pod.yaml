@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: az-pod
+  namespace: jenkins-vm
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: az-container
+    image: quay.io/nilesh_hadalgi/azurevmscheduler:v1.0
+    env:
+    - name: command
+      value: start
+    - name: AZURE_VM_NAMEsd
+      value: azure-vm
+    - name: AZURE_RG_NAME
+      value: azure-assignment
+    envFrom:
+    - secretRef:
+        name: az-secret
