@@ -28,21 +28,67 @@ pipeline {
                         variable: 'PEM_FILE'
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
-                            
-        
                             withCredentials([file(credentialsId: 'az-secret', variable: 'YAML_FILE')]) {
-
                                 sh "chmod 400 ${PEM_FILE}"
                                 sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files/"
                                 sh "scp -i ${PEM_FILE} $WORKSPACE/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
                             }
-
                            
                         }
                     }
                 }
             }
         }
+
+        stage("Create Name Space"){
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'FileBinding',
+                        credentialsId: 'ec2-pem-file',
+                        variable: 'PEM_FILE'
+                    ]]) {
+                        sshagent(['jenkins-ec2-ssh-key']) {
+                            sh "chmod 400 ${PEM_FILE}"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl create namespace jenkins-vm || echo 'namespace already exists'"
+                        }
+                    }
+                }
+            }
+        }
+        stage("Apply Secrets"){
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'FileBinding',
+                        credentialsId: 'ec2-pem-file',
+                        variable: 'PEM_FILE'
+                    ]]) {
+                        sshagent(['jenkins-ec2-ssh-key']) {
+                            sh "chmod 400 ${PEM_FILE}"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-secret.yaml -n jenkins-vm"
+                        }
+                    }
+                }
+            }
+        }
+        stage("Apply Pod Spec"){
+            steps {
+                script {
+                    withCredentials([[
+                        $class: 'FileBinding',
+                        credentialsId: 'ec2-pem-file',
+                        variable: 'PEM_FILE'
+                    ]]) {
+                        sshagent(['jenkins-ec2-ssh-key']) {
+                            sh "chmod 400 ${PEM_FILE}"
+                            sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-pod.yaml -n jenkins-vm"
+                        }
+                    }
+                }
+            }
+        }
+
 
     }
 
