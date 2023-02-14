@@ -30,7 +30,7 @@ pipeline {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
                             sh "scp -i ${PEM_FILE} $WORKSPACE/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
-                            sh "scp -i ${PEM_FILE} ./secrets/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
+                            sh "scp -i ${PEM_FILE} ./ec2-user/secrets/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
                         }
                     }
                 }
