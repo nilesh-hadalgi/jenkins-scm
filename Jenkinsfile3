@@ -28,10 +28,13 @@ pipeline {
                         variable: 'PEM_FILE'
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
+                            
+        
                             withCredentials([file(credentialsId: 'az-secret', variable: 'YAML_FILE')]) {
+
                                 sh "chmod 400 ${PEM_FILE}"
-                                sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files/"
                                 sh "scp -i ${PEM_FILE} $WORKSPACE/*.yaml ubuntu@54.174.129.48:./Nilesh/files/"
+                                sh "scp -i ${PEM_FILE}  ${YAML_FILE} ubuntu@54.174.129.48:./Nilesh/files"
                             }
                            
                         }
