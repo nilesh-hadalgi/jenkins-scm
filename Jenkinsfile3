@@ -20,7 +20,7 @@ pipeline {
                 }
             }
         }
-        stage('copy') {
+        stage('Deploy') {
             steps {
                 script {
                      input "Continue?"
