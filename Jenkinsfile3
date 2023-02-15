@@ -90,7 +90,9 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh """ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 "sed -i 's/value: start/value: stop/' ./Nilesh/files/az-pod.yaml""""
+                            sh """
+                            ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 "sed -i 's/value: start/value: stop/' ./Nilesh/files/az-pod.yaml"
+                            """
                             
                             sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-pod.yaml -n  ${params.NAMESPACE_NAME}"
                         }
