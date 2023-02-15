@@ -2,8 +2,6 @@ pipeline {
     agent any
      parameters {
         string(name: 'NAMESPACE_NAME', defaultValue: 'jenkins-vm', description: 'Name of the new namespace')
-        string(name: 'COMMAND', defaultValue: 'stop', description: 'vm state modifier')
-        
     }
     stages {
         stage('build') {
@@ -90,10 +88,6 @@ pipeline {
                     ]]) {
                         sshagent(['jenkins-ec2-ssh-key']) {
                             sh "chmod 400 ${PEM_FILE}"
-                            sh """
-                            ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48 "sed -i 's/value: start/value: ${params.COMMAND}/' ./Nilesh/files/az-pod.yaml"
-                            """
-                            
                             sh "ssh -o StrictHostKeyChecking=no -i ${PEM_FILE} ubuntu@54.174.129.48  kubectl apply -f ./Nilesh/files/az-pod.yaml -n  ${params.NAMESPACE_NAME}"
                         }
                     }
