@@ -1,71 +1,48 @@
-# Setting Up Jenkins on EC2 as ec2-user
-
-This guide provides step-by-step instructions for setting up Jenkins on an Amazon Elastic Compute Cloud (EC2) instance running Amazon Linux or Red Hat Enterprise Linux (RHEL) as the ec2-user.
+# Installing Jenkins on AWS EC2 Instance
+This guide explains how to install Jenkins on an AWS EC2 instance running Amazon Linux. Jenkins is an open-source automation server that can be used to automate building, testing, and deploying software applications.
 
 ## Prerequisites
+Before you begin, ensure that you have the following:
 
-- An EC2 instance running Amazon Linux or Red Hat Enterprise Linux (RHEL).
-- An SSH client to connect to your instance (e.g., PuTTY, OpenSSH, or Git Bash).
-- A key pair to connect to your instance. You can create a key pair in the Amazon EC2 console or using the AWS Command Line Interface (CLI).
-- A basic understanding of the Linux command line interface.
-
-## Steps
-
-1. Launch an EC2 instance running Amazon Linux or Red Hat Enterprise Linux (RHEL).
-2. Connect to the instance using SSH.
-
+An AWS EC2 instance running Amazon Linux.
+A user account with sudo privileges.
+### Installation Steps
+Update software packages on your EC2 instance:
 ```
-ssh -i your-key-pair.pem ec2-user@your-instance-public-dns-name
+sudo yum update –y
 ```
-Replace "your-key-pair.pem" with the name of your private key file and "your-instance-public-dns-name" with the public DNS name of your instance.
-3. Update the instance to the latest packages.
-
+Add the Jenkins repository to your EC2 instance:
 ```
-sudo yum update -y
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
 ```
-
-4. Install Java on the instance.
+Import the Jenkins-CI key file to enable installation from the package:
 ```
-sudo yum install java-1.8.0-openjdk-devel -y
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 ```
-5. Add the Jenkins repository to the instance.
+Upgrade software packages on your EC2 instance:
 ```
-sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+sudo yum upgrade
 ```
-6. Install Jenkins on the instance.
+Install Java on your EC2 instance:
+```
+sudo amazon-linux-extras install java-openjdk11 -y
+```
+Install Jenkins on your EC2 instance:
 ```
 sudo yum install jenkins -y
 ```
-7. Start the Jenkins service.
-```
-sudo systemctl start jenkins
-```
-8. Check the status of the Jenkins service.
-```
-sudo systemctl status jenkins
-```
-If the service is running, you should see the status as "active (running)".
-9. Open the Jenkins web interface in your browser.
-
-```
-http://your-instance-public-dns-name:8080
-```
-Replace "your-instance-public-dns-name" with the public DNS name of your instance.
-10. Retrieve the initial admin password and unlock Jenkins.
-
-```
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-```
-
-Copy the password and paste it into the "Administrator password" field on the "Unlock Jenkins" page.
-11. Follow the prompts to complete the Jenkins installation. You will be asked to create an admin user and install any recommended plugins.
-12. Enable Jenkins to start automatically on system boot.
-
+Enable the Jenkins service to start at boot:
 ```
 sudo systemctl enable jenkins
 ```
-
+Start the Jenkins service:
+```
+sudo systemctl start jenkins
+```
+Check the status of the Jenkins service:
+```
+sudo systemctl status jenkins
+```
 ## Conclusion
-
-By following these steps, you should now have Jenkins running on an EC2 instance as the ec2-user, and the service should start automatically on system boot. From here, you can configure Jenkins to suit your specific needs and begin using it for continuous integration and delivery workflows.
+Congratulations! You have successfully installed Jenkins on your AWS EC2 instance. You can now use Jenkins to automate building, testing, and deploying your software applications.
